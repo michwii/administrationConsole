@@ -1,22 +1,9 @@
-var SerialPort = require('serialport');
 var express = require('express');
+var panTilt = require('./routes/panTilt')
 var app = express();
 
 app.set('view engine', 'ejs');
-
-var port = new SerialPort('COM3', {
-  parser: SerialPort.parsers.readline('\n'),
-  baudRate: 9600
-});
-
-port.on('open', function() {
-
-});
-// open errors will be emitted as an error event
-port.on('error', function(err) {
-  console.log('Error: ', err.message);
-});
-
+app.use('/panTilt', panTilt);
 
 app.get('/', function (req, res) {
   res.render('index');
