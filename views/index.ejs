@@ -19,15 +19,21 @@
 
     <script type="text/javascript">
       function gripperMove(value){
-        console.log("gripper " + value);
+        $.post( "panTilt/gripper", function( data ) {
+          alert(data);
+        });
       }
 
       function panMove(value){
-        console.log("pan " + value);
+        $.post( "panTilt/pan", function( data ) {
+          alert(data);
+        });
       }
 
       function tiltMove(value){
-        console.log("tilt " + value);
+        $.post( "panTilt/tilt", function( data ) {
+          alert(data);
+        });
       }
     </script>
 
