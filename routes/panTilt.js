@@ -1,19 +1,26 @@
 var express = require('express');
 var router = express.Router();
 var com = require('./com.js');
+var bodyParser = require('body-parser');
 
+router.use(bodyParser.urlencoded({ extended: false }));
+router.use(bodyParser.json());
 
 router.post('/gripper', function (req, res) {
-  com(JSON.stringify({gripperMove:1}));
-  res.json({gripperMove:1});
+  com(JSON.stringify(req.body), function(feedback){
+    res.json(feedback);
+  });
+
 });
 router.post('/pan', function (req, res) {
-  com(JSON.stringify({panMove:1}));
-  res.json({panMove:1});
+  com(JSON.stringify(req.body), function(feedback){
+    res.json(feedback);
+  });
 });
 router.post('/tilt', function (req, res) {
-  com(JSON.stringify({tiltMove:1}));
-  res.json({tiltMove:1});
+  com(JSON.stringify(req.body), function(feedback){
+    res.json(feedback);
+  });
 });
 
 module.exports = router;

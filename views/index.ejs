@@ -19,21 +19,39 @@
 
     <script type="text/javascript">
       function gripperMove(value){
-        $.post( "panTilt/gripper", function( data ) {
-          alert(data);
+        gripperStep = $('#gripperStep').val();
+        console.log(gripperStep);
+        $.post( "panTilt/gripper", {gripperMove: value*gripperStep}, function( data ) {
+          updateCurrentState(data);
         });
       }
 
       function panMove(value){
-        $.post( "panTilt/pan", function( data ) {
-          alert(data);
+        $.post( "panTilt/pan", { panMove: value}, function( data ) {
+          updateCurrentState(data);
+        });
+      }
+
+      function panStop(){
+
+        directionToStop = ($('#panValue').val() > 95) ? 1 : -1;
+
+        $.post( "panTilt/pan", { panMove: ($('#panValue').val() - 95) * directionToStop}, function( data ) {
+          updateCurrentState(data);
         });
       }
 
       function tiltMove(value){
-        $.post( "panTilt/tilt", function( data ) {
-          alert(data);
+        tiltStep = $('#tiltStep').val();
+        $.post( "panTilt/tilt", { tiltMove: value*tiltStep}, function( data ) {
+          updateCurrentState(data);
         });
+      }
+
+      function updateCurrentState(feedback){
+        $('#gripperValue').val(feedback.gripperDegree);
+        $('#tiltValue').val(feedback.tiltDegree);
+        $('#panValue').val(feedback.panDegree);
       }
     </script>
 
@@ -45,20 +63,28 @@
       <div class="col-md-4">.
         <h3>Gripper</h3>
         <button type="button" class="btn btn-primary btn-lg btn-block" onclick="gripperMove(1);">+</button>
-        <input type="text" class="form-control" id="gripperValue">
+        Step :
+        <input type="text" class="form-control" id="gripperStep" value="10">
         <button type="button" class="btn btn-primary btn-lg btn-block" onclick="gripperMove(-1);">-</button>
+        Current Value :
+        <input type="text" class="form-control" id="gripperValue" value="??">
       </div>
       <div class="col-md-4">
         <h3>Pan</h3>
-        <button type="button" class="btn btn-primary btn-lg btn-block" onclick="panMove(1);">+</button>
-        <input type="text" class="form-control" id="panValue">
-        <button type="button" class="btn btn-primary btn-lg btn-block" onclick="panMove(-1);">-</button>
+        <button type="button" class="btn btn-primary btn-lg btn-block" onclick="panMove(-180);">+</button>
+        <button type="button" class="btn btn-primary btn-lg btn-block" onclick="panStop();">Stop</button>
+        <button type="button" class="btn btn-primary btn-lg btn-block" onclick="panMove(180);">-</button>
+        Current Value :
+        <input type="text" class="form-control" id="panValue" value="0">
       </div>
       <div class="col-md-4">
         <h3>Tilt</h3>
         <button type="button" class="btn btn-primary btn-lg btn-block" onclick="tiltMove(1);" >+</button>
-        <input type="text" class="form-control" id="TiltValue">
+        Step :
+        <input type="text" class="form-control" id="tiltStep" value="5">
         <button type="button" class="btn btn-primary btn-lg btn-block" onclick="tiltMove(-1);">-</button>
+        Current Value :
+        <input type="text" class="form-control" id="tiltValue" value="??">
       </div>
     </div>
 
