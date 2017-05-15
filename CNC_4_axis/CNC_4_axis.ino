@@ -1,4 +1,5 @@
-int Distance = 0; // Record the number of steps we've taken 
+#include <ArduinoJson.h>
+
 int X_axisDirectionPin = 2;
 int X_axisMovePin = 3;
 int A_axisDirectionPin = 6;
@@ -6,9 +7,9 @@ int A_axisMovePin = 7;
 int Y_axisDirectionPin = 4;
 int Y_axisMovePin = 5;
 
-int X_axisMovement = 1000;
-int A_axisMovement = 1000;
-int Y_axisMovement = 10000;
+int X_axisMovement = 0;
+int A_axisMovement = 0;
+int Y_axisMovement = 0;
 
 void setup() {
 
@@ -30,6 +31,8 @@ void setup() {
 }
 
 void loop() {
+
+  readInstructions(&X_axisMovement, &A_axisMovement, &Y_axisMovement);
 
   X_axisMovement = moveStepperMotor(X_axisDirectionPin, X_axisMovePin, X_axisMovement);
   A_axisMovement = moveStepperMotor(A_axisDirectionPin, A_axisMovePin, A_axisMovement);
@@ -55,6 +58,26 @@ int moveStepperMotor(int axisDirectionPin, int axisMovePin, int axisMovement){
   }else {
       digitalWrite(axisMovePin, LOW);
       return 0;
+  }
+}
+
+
+void readInstructions(int *X_axisMovement, int *A_axisMovement, int *Y_axisMovement){
+  StaticJsonBuffer<200> jsonBuffer;
+  String json;
+  if(Serial.available() > 0) {
+    json = Serial.readStringUntil('\n');
+    JsonObject& commands = jsonBuffer.parseObject(json);
+    if (!commands.success()) {
+      Serial.println("parseObject() failed");
+      return;
+    }
+  
+    *X_axisMovement += commands["X_axisMovement"].as<long>();
+    *A_axisMovement += commands["A_axisMovement"].as<long>();
+    *Y_axisMovement += commands["Y_axisMovement"].as<long>();   
+
+    //{"X_axisMovement":0, "A_axisMovement":0, "Y_axisMovement":0}
   }
 }
 
