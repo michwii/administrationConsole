@@ -10,13 +10,13 @@ router.post('/X_axis', function (req, res) {
   com(JSON.stringify(req.body), function(feedback){
     res.json(feedback);
   });
-
 });
 router.post('/A_axis', function (req, res) {
   com(JSON.stringify(req.body), function(feedback){
     res.json(feedback);
   });
 });
+
 router.post('/Y_axis', function (req, res) {
   com(JSON.stringify(req.body), function(feedback){
     res.json(feedback);
