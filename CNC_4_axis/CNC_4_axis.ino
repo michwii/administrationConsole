@@ -12,6 +12,9 @@ Servo gripperServo;
 int B_axisPin = 10;
 Servo B_axisServo;
 
+int X_limitPin = 13;
+int Y_limitPin = 12;
+
 double X_axisMovement = 0;
 double A_axisMovement = 0;
 double Y_axisMovement = 0;
@@ -44,11 +47,24 @@ void setup() {
 
 void loop() {
 
+  boolean maximun_X_Reached = !((boolean) digitalRead(X_limitPin));
+  boolean maximun_Y_Reached = (boolean) digitalRead(Y_limitPin);
+
   readInstructions(&X_axisMovement, &A_axisMovement, &Y_axisMovement, &B_axisMovement, &gripperMovement);
 
-  X_axisMovement = moveStepperMotor(X_axisDirectionPin, X_axisMovePin, X_axisMovement);
+  if(maximun_X_Reached && X_axisMovement > 0){
+    X_axisMovement = 0;
+  }else{
+    X_axisMovement = moveStepperMotor(X_axisDirectionPin, X_axisMovePin, X_axisMovement);
+  }
+
+  if(maximun_Y_Reached && Y_axisMovement > 0){
+    Y_axisMovement = 0;
+  }else{
+    Y_axisMovement = moveStepperMotor(Y_axisDirectionPin, Y_axisMovePin, Y_axisMovement);
+  }
+  
   A_axisMovement = moveStepperMotor(A_axisDirectionPin, A_axisMovePin, A_axisMovement);
-  Y_axisMovement = moveStepperMotor(Y_axisDirectionPin, Y_axisMovePin, Y_axisMovement);
   B_axisServo.write(B_axisMovement);
   gripperServo.write(gripperMovement);
   
