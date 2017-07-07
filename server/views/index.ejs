@@ -7,29 +7,37 @@
   <link rel='stylesheet prefetch' href='rangeslider.css'>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-
-  <script src="https://d3js.org/d3.v4.js"></script>
 
 </head>
 
 <body>
   <h1>Administration console</h1>
 
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
       <div class="col-md-5">
         <h5>Rotation slider</h5>
         <input id="rotationSlider" type="range" min="10" max="1000" step="10" value="300" data-orientation="horizontal" />
       </div>
-      <div class="col-md-5" style="height: 500px">
+      <div class="col-md-2" style="height: 500px">
         <h5>Y slider</h5>
         <input id="Y_Slider" type="range" min="10" max="1000" step="10" value="300" data-orientation="vertical" />
       </div>
-      <div class="col-md-2" style="height: 500px">
-        <button type="button" class="btn btn-info">Reset position</button>
+      <div class="col-md-4" style="height: 500px">
+        <button type="button" class="btn btn-warning">Reset position</button>
+        <button type="button" class="btn btn-info" onclick="addInstruction();">Add position</button>
+        <h3>Instructions list</h3>
+        <br/>
+        <div style="height : 300px; overflow: scroll">
+          <ul id="instructionsList" class="list-group">
+
+          </ul>
+        </div>
+        <br/>
+        <button type="button" class="btn btn-success" onclick="sendInstructions();">Send instructions</button>
       </div>
     </div>
   </div>
@@ -44,25 +52,35 @@
 
   <script type="text/javascript">
     $("#X_Slider").rangeslider({
-      polyfill: false,
-      onSlideEnd: function(position, value) {
-        alert("X")
-      }
+      polyfill: false
     });
 
     $("#Y_Slider").rangeslider({
-      polyfill: false,
-      onSlideEnd: function(position, value) {
-        alert("Y")
-      }
+      polyfill: false
     });
 
     $("#rotationSlider").rangeslider({
-      polyfill: false,
-      onSlideEnd: function(position, value) {
-        alert("RotationSlider")
-      }
+      polyfill: false
     });
+
+    function addInstruction(){
+      var instructionToAdd = {"X_axisMovement":$("#X_Slider").val(), "A_axisMovement":$("#rotationSlider").val(), "Y_axisMovement":$("#Y_Slider").val()};
+      $("#instructionsList" ).append('<li class="list-group-item">' + JSON.stringify(instructionToAdd) + '</li>');
+    }
+
+    function sendInstructions(){
+      var allInstructions = $( "li" ).length;
+      if(allInstructions > 0){
+        var instructionToSend = $("li").first();
+
+        $.post( "/cnc/command", JSON.parse(instructionToSend.text()), function(data) {
+          if(!data.success){
+            instructionToSend.remove();
+            setTimeout(sendInstructions,20000);
+          }
+        });
+      }
+    }
   </script>
 
 </body>
