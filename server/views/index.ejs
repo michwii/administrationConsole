@@ -17,21 +17,22 @@
 
 <body>
   <h1>Administration console</h1>
-  <div class="container w-75" style="background-color : red; height: 500px">
-    <center>
-      <h5>Y slider</h5>
 
-      <div class="u-cf">
-        <h2><code>data-orientation="vertical"</code></h2>
-        <div style="height: 400px; background-color : yellow">
-          <input type="range" min="0" max="5" data-orientation="vertical">
-        </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-5">
+        <h5>Rotation slider</h5>
+        <input type="range" min="10" max="1000" step="10" value="300" data-orientation="horizontal" />
       </div>
-    </center>
+      <div class="col-md-7" style="height: 500px">
+        <h5>Y slider</h5>
+        <input type="range" min="10" max="1000" step="10" value="300" data-orientation="vertical" />
+      </div>
+    </div>
   </div>
+  <br/>
 
   <div class="container w-75">
-
     <h5>X slider</h5>
     <input type="range"/>
   </div>
