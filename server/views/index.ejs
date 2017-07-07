@@ -22,11 +22,14 @@
     <div class="row">
       <div class="col-md-5">
         <h5>Rotation slider</h5>
-        <input type="range" min="10" max="1000" step="10" value="300" data-orientation="horizontal" />
+        <input id="rotationSlider" type="range" min="10" max="1000" step="10" value="300" data-orientation="horizontal" />
       </div>
-      <div class="col-md-7" style="height: 500px">
+      <div class="col-md-5" style="height: 500px">
         <h5>Y slider</h5>
-        <input type="range" min="10" max="1000" step="10" value="300" data-orientation="vertical" />
+        <input id="Y_Slider" type="range" min="10" max="1000" step="10" value="300" data-orientation="vertical" />
+      </div>
+      <div class="col-md-2" style="height: 500px">
+        <button type="button" class="btn btn-info">Reset position</button>
       </div>
     </div>
   </div>
@@ -34,21 +37,31 @@
 
   <div class="container w-75">
     <h5>X slider</h5>
-    <input type="range"/>
+    <input id="X_Slider" type="range"/>
   </div>
 
-
-  <br><br><br>
   <script src='/rangeslider.min.js'></script>
 
   <script type="text/javascript">
-    $(function() {
-      const $inputRange = $('input[type=range]');
+    $("#X_Slider").rangeslider({
+      polyfill: false,
+      onSlideEnd: function(position, value) {
+        alert("X")
+      }
+    });
 
-      $inputRange.rangeslider({
-        polyfill: false
-      });
+    $("#Y_Slider").rangeslider({
+      polyfill: false,
+      onSlideEnd: function(position, value) {
+        alert("Y")
+      }
+    });
 
+    $("#rotationSlider").rangeslider({
+      polyfill: false,
+      onSlideEnd: function(position, value) {
+        alert("RotationSlider")
+      }
     });
   </script>
 
