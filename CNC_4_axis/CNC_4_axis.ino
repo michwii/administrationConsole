@@ -52,7 +52,7 @@ void loop() {
 
   readInstructions(&X_axisMovement, &A_axisMovement, &Y_axisMovement, &B_axisMovement, &gripperMovement);
 
-  if(maximun_X_Reached && X_axisMovement > 0){
+  if(maximun_X_Reached && X_axisMovement < 0){
     X_axisMovement = 0;
   }else{
     X_axisMovement = moveStepperMotor(X_axisDirectionPin, X_axisMovePin, X_axisMovement);

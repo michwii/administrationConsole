@@ -1,6 +1,3 @@
-var originalSystemPosition = {x:0,y:1000,a:500};
-var oldSystemPosition = {x:0,y:1000,a:500};
-
 $("#X_Slider").rangeslider({
   polyfill: false,
   onSlideEnd: function(position, value){
@@ -31,8 +28,11 @@ $("#rotationSlider").rangeslider({
   }
 });
 
+var originalSystemPosition = {x:$("#X_Slider").val(),y:$("#Y_Slider").val(),a:$("#rotationSlider").val()};
+var oldSystemPosition = {x:$("#X_Slider").val(),y:$("#Y_Slider").val(),a:$("#rotationSlider").val()};
+
 function resetPosition(){
-  var instructionToAdd = {"X_axisMovement": -1000, "Y_axisMovement": -1000};
+  var instructionToAdd = {"X_axisMovement": -100000, "Y_axisMovement": 2000000};
   $("#instructionsList").append('<li class="list-group-item">' + JSON.stringify(instructionToAdd) + '</li>');
   sendInstructions();
 }
@@ -68,7 +68,7 @@ function executeInstruction(listOfInstruction){
     var jsonInstruction = JSON.parse(liToExecute.text());
 
     $.post( "/cnc/command", jsonInstruction, function(data) {
-      if(!data.success){
+      if(data.success){
         $("#rotationSlider").val(jsonInstruction.A_axisMovement+parseInt($("#rotationSlider").val())).change();
         $("#X_Slider").val(jsonInstruction.X_axisMovement+parseInt($("#X_Slider").val())).change();
         $("#Y_Slider").val(jsonInstruction.Y_axisMovement+parseInt($("#Y_Slider").val())).change();

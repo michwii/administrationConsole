@@ -2,7 +2,7 @@ var SerialPort = require('serialport');
 var callback;
 var port = new SerialPort('COM3', {
   parser: SerialPort.parsers.readline('\n'),
-  baudRate: 9600
+  baudRate: 250000
 });
 
 port.on('open', function() {

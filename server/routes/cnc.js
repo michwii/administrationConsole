@@ -7,10 +7,11 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 router.post('/command', function (req, res) {
-  //com(JSON.stringify(req.body), function(feedback){
-    //res.json(feedback);
-  //});
-  res.json(req.body);
+  com(JSON.stringify(req.body), function(feedback){
+    console.log(feedback);
+    res.json(feedback);
+  });
+  //res.json(req.body);
 });
 
 module.exports = router;
