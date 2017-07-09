@@ -4,19 +4,25 @@ var oldSystemPosition = {x:0,y:1000,a:500};
 $("#X_Slider").rangeslider({
   polyfill: false,
   onSlideEnd: function(position, value){
-
+    if($("input[name=option]:checked").val() == "manual"){
+      addInstruction();
+      sendInstructions();
+    }
   }
 });
 
 $("#Y_Slider").rangeslider({
   polyfill: false,
   onSlideEnd: function(position, value){
-    console.log(position);
+
   }
 });
 
 $("#rotationSlider").rangeslider({
-  polyfill: false
+  polyfill: false,
+  onSlideEnd: function(position, value){
+
+   }
 });
 
 function resetPosition(){
