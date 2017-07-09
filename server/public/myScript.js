@@ -14,15 +14,21 @@ $("#X_Slider").rangeslider({
 $("#Y_Slider").rangeslider({
   polyfill: false,
   onSlideEnd: function(position, value){
-
+    if($("input[name=option]:checked").val() == "manual"){
+      addInstruction();
+      sendInstructions();
+    }
   }
 });
 
 $("#rotationSlider").rangeslider({
   polyfill: false,
   onSlideEnd: function(position, value){
-
-   }
+    if($("input[name=option]:checked").val() == "manual"){
+      addInstruction();
+      sendInstructions();
+    }
+  }
 });
 
 function resetPosition(){
@@ -81,4 +87,10 @@ function executeInstruction(listOfInstruction){
 
 function enableOrDisableButtons(enable){
   $('button').prop('disabled', enable);
+  $("#X_Slider").prop("disabled", enable);
+  $("#Y_Slider").prop("disabled", enable);
+  $("#rotationSlider").prop("disabled", enable);
+  $("#X_Slider").rangeslider('update');
+  $("#Y_Slider").rangeslider('update');
+  $("#rotationSlider").rangeslider('update');
 }
