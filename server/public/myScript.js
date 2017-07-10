@@ -28,17 +28,33 @@ $("#rotationSlider").rangeslider({
   }
 });
 
-var originalSystemPosition = {x:$("#X_Slider").val(),y:$("#Y_Slider").val(),a:$("#rotationSlider").val()};
-var oldSystemPosition = {x:$("#X_Slider").val(),y:$("#Y_Slider").val(),a:$("#rotationSlider").val()};
+$("#gripperSlider").rangeslider({
+  polyfill: false,
+  onSlideEnd: function(position, value){
+    if($("input[name=option]:checked").val() == "manual"){
+      addInstruction();
+      sendInstructions();
+    }
+  }
+});
+
+var originalSystemPosition = {x:$("#X_Slider").val(),y:$("#Y_Slider").val(),a:$("#rotationSlider").val(), b:$("input[name=B_Slider]:checked").val(), gripper:$("#gripperSlider").val()};
+var oldSystemPosition = {x:$("#X_Slider").val(),y:$("#Y_Slider").val(),a:$("#rotationSlider").val(), b:$("input[name=B_Slider]:checked").val(), gripper:$("#gripperSlider").val()};
 
 function resetPosition(){
-  var instructionToAdd = {"X_axisMovement": -100000, "Y_axisMovement": 2000000};
+  var instructionToAdd = {"X_axisMovement": -100000, "Y_axisMovement": 2000000, gripperMovement: 20, B_axisMovement: 95};
   $("#instructionsList").append('<li class="list-group-item">' + JSON.stringify(instructionToAdd) + '</li>');
   sendInstructions();
 }
 
 function addInstruction(){
-  var instructionToAdd = {"X_axisMovement":$("#X_Slider").val()-oldSystemPosition.x, "A_axisMovement":$("#rotationSlider").val()-oldSystemPosition.a, "Y_axisMovement":$("#Y_Slider").val()-oldSystemPosition.y};
+  var instructionToAdd = {
+    "X_axisMovement":$("#X_Slider").val()-oldSystemPosition.x,
+    "A_axisMovement":$("#rotationSlider").val()-oldSystemPosition.a,
+    "Y_axisMovement":$("#Y_Slider").val()-oldSystemPosition.y,
+    "B_axisMovement":$("input[name=B_Slider]:checked").val(),
+    "gripperMovement":$("#gripperSlider").val()
+  };
   $("#instructionsList").append('<li class="list-group-item">' + JSON.stringify(instructionToAdd) + '</li>');
   updateOldPosition();
 }
@@ -47,6 +63,8 @@ function updateOldPosition(){
   oldSystemPosition.x = $("#X_Slider").val();
   oldSystemPosition.y = $("#Y_Slider").val();
   oldSystemPosition.a = $("#rotationSlider").val();
+  oldSystemPosition.b = $("input[name=B_Slider]:checked").val();
+  oldSystemPosition.gripper = $("#gripperSlider").val();
 }
 
 function sendInstructions(){
@@ -57,6 +75,8 @@ function sendInstructions(){
     $("#X_Slider").val(originalSystemPosition.x).change();
     $("#Y_Slider").val(originalSystemPosition.y).change();
     $("#rotationSlider").val(originalSystemPosition.a).change();
+    $("input[name=B_Slider][value='"+ originalSystemPosition.b +"']").prop("checked",true);
+    $("#gripperSlider").val(originalSystemPosition.gripper).change();
     executeInstruction(allInstructions.toArray());
   }
 }
@@ -72,7 +92,8 @@ function executeInstruction(listOfInstruction){
         $("#rotationSlider").val(jsonInstruction.A_axisMovement+parseInt($("#rotationSlider").val())).change();
         $("#X_Slider").val(jsonInstruction.X_axisMovement+parseInt($("#X_Slider").val())).change();
         $("#Y_Slider").val(jsonInstruction.Y_axisMovement+parseInt($("#Y_Slider").val())).change();
-
+        $("input[name=B_Slider][value='"+ jsonInstruction.B_axisMovement +"']").prop("checked",true);
+        $("#gripperSlider").val(jsonInstruction.gripperMovement).change();
         liToExecute.remove();
         setTimeout(executeInstruction.bind(null, listOfInstruction),2000);
       }
@@ -82,6 +103,8 @@ function executeInstruction(listOfInstruction){
     originalSystemPosition.x = $("#X_Slider").val();
     originalSystemPosition.y = $("#Y_Slider").val();
     originalSystemPosition.a = $("#rotationSlider").val();
+    originalSystemPosition.b = $("input[name=B_Slider]:checked").val();
+    originalSystemPosition.gripper = $("#gripperSlider").val();
   }
 }
 
@@ -90,7 +113,11 @@ function enableOrDisableButtons(enable){
   $("#X_Slider").prop("disabled", enable);
   $("#Y_Slider").prop("disabled", enable);
   $("#rotationSlider").prop("disabled", enable);
+  $("#gripperSlider").prop("disabled", enable);
+  $("input[name=B_Slider]").prop("disabled", enable);
+
   $("#X_Slider").rangeslider('update');
   $("#Y_Slider").rangeslider('update');
   $("#rotationSlider").rangeslider('update');
+  $("#gripperSlider").rangeslider('update');
 }

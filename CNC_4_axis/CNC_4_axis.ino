@@ -12,14 +12,14 @@ Servo gripperServo;
 int B_axisPin = 10;
 Servo B_axisServo;
 
-int X_limitPin = 13;
-int Y_limitPin = 12;
+int X_limitPin = 12;
+int Y_limitPin = 13;
 
 double X_axisMovement = 0;
 double A_axisMovement = 0;
 double Y_axisMovement = 0;
 int gripperMovement = 0;
-int B_axisMovement = 0;
+int B_axisMovement = 95;
 
 boolean motorsMoving = false;
 
@@ -34,6 +34,9 @@ void setup() {
   pinMode(Y_axisDirectionPin, OUTPUT);
   pinMode(Y_axisMovePin, OUTPUT);
 
+  pinMode(X_limitPin, INPUT);
+  pinMode(Y_limitPin, INPUT);
+
   digitalWrite(X_axisDirectionPin, LOW);
   digitalWrite(X_axisMovePin, LOW);
   digitalWrite(A_axisDirectionPin, LOW);
@@ -47,18 +50,21 @@ void setup() {
 
 void loop() {
 
-  boolean maximun_X_Reached = !((boolean) digitalRead(X_limitPin));
+
+  boolean maximun_X_Reached = (boolean) digitalRead(X_limitPin);
   boolean maximun_Y_Reached = (boolean) digitalRead(Y_limitPin);
 
   readInstructions(&X_axisMovement, &A_axisMovement, &Y_axisMovement, &B_axisMovement, &gripperMovement);
 
   if(maximun_X_Reached && X_axisMovement < 0){
+    Serial.println("Limit X reached");
     X_axisMovement = 0;
   }else{
     X_axisMovement = moveStepperMotor(X_axisDirectionPin, X_axisMovePin, X_axisMovement);
   }
 
   if(maximun_Y_Reached && Y_axisMovement > 0){
+    Serial.println("Limit Y reached");
     Y_axisMovement = 0;
   }else{
     Y_axisMovement = moveStepperMotor(Y_axisDirectionPin, Y_axisMovePin, Y_axisMovement);
@@ -101,7 +107,7 @@ double moveStepperMotor(int axisDirectionPin, int axisMovePin, double axisMoveme
 }
 
 void readInstructions(double *X_axisMovement, double *A_axisMovement, double *Y_axisMovement, int *B_axisMovement, int *gripperMovement){
-  StaticJsonBuffer<200> jsonBuffer;
+  StaticJsonBuffer<500> jsonBuffer;
   String json;
   if(Serial.available() > 0) {
     json = Serial.readStringUntil('\n');
@@ -119,7 +125,7 @@ void readInstructions(double *X_axisMovement, double *A_axisMovement, double *Y_
     *B_axisMovement = commands["B_axisMovement"].as<int>(); 
     *gripperMovement = commands["gripperMovement"].as<int>(); 
 
-    //{"X_axisMovement":0, "A_axisMovement":0, "Y_axisMovement":0, "B_axisMovement":20, "gripperMovement":60}
+    //{"X_axisMovement":0, "A_axisMovement":0, "Y_axisMovement":0, "B_axisMovement":95, "gripperMovement":60}
   }
 }
 
