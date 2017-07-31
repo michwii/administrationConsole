@@ -1,7 +1,7 @@
 $("#X_Slider").rangeslider({
   polyfill: false,
   onSlideEnd: function(position, value){
-    if($("input[name=option]:checked").val() == "manual"){
+    if($("input[name=modeAutoManual]:checked").val() == "manual"){
       addInstruction();
       sendInstructions();
     }
@@ -11,7 +11,7 @@ $("#X_Slider").rangeslider({
 $("#Y_Slider").rangeslider({
   polyfill: false,
   onSlideEnd: function(position, value){
-    if($("input[name=option]:checked").val() == "manual"){
+    if($("input[name=modeAutoManual]:checked").val() == "manual"){
       addInstruction();
       sendInstructions();
     }
@@ -21,9 +21,18 @@ $("#Y_Slider").rangeslider({
 $("#rotationSlider").rangeslider({
   polyfill: false,
   onSlideEnd: function(position, value){
-    if($("input[name=option]:checked").val() == "manual"){
+    if($("input[name=modeAutoManual]:checked").val() == "manual"){
       addInstruction();
       sendInstructions();
+    }
+  },
+  onSlide: function(position, value) {
+    if($("input[name=modeLockUnlock]:checked").val() == "lock"){
+
+      var angleDifference = getAngularPosition(value - oldSystemPosition.a) ;
+      var offsetX = Math.round(getXOffset(angleDifference));
+      var sliderValue = parseInt(oldSystemPosition.x);
+      $("#X_Slider").val(sliderValue + offsetX).change();
     }
   }
 });
@@ -31,7 +40,7 @@ $("#rotationSlider").rangeslider({
 $("#gripperSlider").rangeslider({
   polyfill: false,
   onSlideEnd: function(position, value){
-    if($("input[name=option]:checked").val() == "manual"){
+    if($("input[name=modeAutoManual]:checked").val() == "manual"){
       addInstruction();
       sendInstructions();
     }
@@ -41,8 +50,17 @@ $("#gripperSlider").rangeslider({
 var originalSystemPosition = {x:$("#X_Slider").val(),y:$("#Y_Slider").val(),a:$("#rotationSlider").val(), b:$("input[name=B_Slider]:checked").val(), gripper:$("#gripperSlider").val()};
 var oldSystemPosition = {x:$("#X_Slider").val(),y:$("#Y_Slider").val(),a:$("#rotationSlider").val(), b:$("input[name=B_Slider]:checked").val(), gripper:$("#gripperSlider").val()};
 
+function getAngularPosition(position){
+  return (position * 180) / 160000;
+}
+
+function getXOffset(angular){
+  var distanceInCm = 24 * 2 * Math.PI * (((angular * 100)/360)/100) ;
+  return (15000 * distanceInCm) /35 ;
+}
+
 function resetPosition(){
-  var instructionToAdd = {"X_axisMovement": -100000, "Y_axisMovement": 2000000, gripperMovement: 20, B_axisMovement: 95};
+  var instructionToAdd = {"X_axisMovement": -2000000, "Y_axisMovement": 2000000, gripperMovement: 20, B_axisMovement: 95};
   $("#instructionsList").append('<li class="list-group-item">' + JSON.stringify(instructionToAdd) + '</li>');
   sendInstructions();
 }
@@ -95,7 +113,7 @@ function executeInstruction(listOfInstruction){
         $("input[name=B_Slider][value='"+ jsonInstruction.B_axisMovement +"']").prop("checked",true);
         $("#gripperSlider").val(jsonInstruction.gripperMovement).change();
         liToExecute.remove();
-        setTimeout(executeInstruction.bind(null, listOfInstruction),2000);
+        setTimeout(executeInstruction.bind(null, listOfInstruction),8000);
       }
     });
   }else{//We just finished to read all the instructions we can enable the buttons

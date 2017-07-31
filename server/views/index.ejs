@@ -44,13 +44,21 @@
       <div class="col-md-4" style="height: 500px">
         <button type="button" class="btn btn-warning" onclick="resetPosition();">Reset position</button>
         <button type="button" class="btn btn-info" onclick="addInstruction();">Add position</button>
-
+        <br/><br/>
         <div class="btn-group" data-toggle="buttons">
           <label class="btn btn-primary active">
-            <input type="radio" name="option" value="auto" autocomplete="off" checked> Auto
+            <input type="radio" name="modeAutoManual" value="auto" autocomplete="off" checked> Auto
           </label>
           <label class="btn btn-primary">
-            <input type="radio" name="option" value="manual" autocomplete="off"> Manual
+            <input type="radio" name="modeAutoManual" value="manual" autocomplete="off"> Manual
+          </label>
+        </div>
+        <div class="btn-group" data-toggle="buttons">
+          <label class="btn btn-primary active">
+            <input type="radio" name="modeLockUnlock" checked value="unlock" autocomplete="off"> Unlock
+          </label>
+          <label class="btn btn-primary">
+            <input type="radio" name="modeLockUnlock" value="lock" autocomplete="off"> Lock
           </label>
         </div>
 
@@ -71,7 +79,7 @@
 
   <div class="container w-75">
     <h5>X slider</h5>
-    <input id="X_Slider" type="range" min="0" max="15000" step="10" value="0" data-orientation="horizontal"/>
+    <input id="X_Slider" type="range" min="0" max="15000" step="1" value="0" data-orientation="horizontal"/>
   </div>
 
   <script src='/rangeslider.min.js'></script>
