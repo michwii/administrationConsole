@@ -1,5 +1,8 @@
 $("#X_Slider").rangeslider({
   polyfill: false,
+  onSlide: function(position, value) {
+    updateAxesValueLabel();
+  },
   onSlideEnd: function(position, value){
     if($("input[name=modeAutoManual]:checked").val() == "manual"){
       addInstruction();
@@ -10,6 +13,9 @@ $("#X_Slider").rangeslider({
 
 $("#Y_Slider").rangeslider({
   polyfill: false,
+  onSlide: function(position, value) {
+    updateAxesValueLabel();
+  },
   onSlideEnd: function(position, value){
     if($("input[name=modeAutoManual]:checked").val() == "manual"){
       addInstruction();
@@ -27,6 +33,7 @@ $("#rotationSlider").rangeslider({
     }
   },
   onSlide: function(position, value) {
+    updateAxesValueLabel();
     if($("input[name=modeLockUnlock]:checked").val() == "lock"){
 
       var angleDifference = getAngularPosition(value - oldSystemPosition.a) ;
@@ -47,8 +54,16 @@ $("#gripperSlider").rangeslider({
   }
 });
 
+updateAxesValueLabel();
+
 var originalSystemPosition = {x:$("#X_Slider").val(),y:$("#Y_Slider").val(),a:$("#rotationSlider").val(), b:$("input[name=B_Slider]:checked").val(), gripper:$("#gripperSlider").val()};
 var oldSystemPosition = {x:$("#X_Slider").val(),y:$("#Y_Slider").val(),a:$("#rotationSlider").val(), b:$("input[name=B_Slider]:checked").val(), gripper:$("#gripperSlider").val()};
+
+function updateAxesValueLabel(){
+  $("#X_labelValue").text($("#X_Slider").val());
+  $("#Y_labelValue").text($("#Y_Slider").val());
+  $("#rotationLabelValue").text($("#rotationSlider").val());
+}
 
 function getAngularPosition(position){
   return (position * 180) / 160000;
